@@ -1,0 +1,17 @@
+{
+	"name": "rationalacoustics-smaart3",
+	"version": "1.0.0",
+	"description": "Rational Acoustics Smaart(API V3) for Companion.",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Todd Murphy <murphytodd4@gmail.com>",
+	"license": "MIT",
+	"keywords": [
+		"Audio"
+	],
+	"manufacturer": "Rational Acoustics",
+	"product": "Smaart API V3",
+	"shortname": "Smaart-V3"
+}
