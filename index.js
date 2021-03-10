@@ -207,6 +207,36 @@ class instance extends instance_skel {
 						id: 'tabName'
 					}
 				]
+			},
+			'startGenerator': {
+				label: 'Start signal generator',
+				options: []
+			},
+			'stopGenerator': {
+				label: 'Stop signal generator',
+				options: []
+			},
+			'setGeneratorLevel': {
+				label: 'Set Generator Level',
+				options: [
+					{
+					type: 'number',
+					label: 'Level (dB FS)',
+					id: 'level',
+					min: -200,
+					max: 0,
+					default: 0,
+					required: true
+					}
+				]
+			},
+			'startTrackingAll': {
+				label: 'Start delay tracking for current tab',
+				options: []
+			},
+			'stopTrackingAll': {
+				label: 'Stop delay tracking for current tab',
+				options: []
 			}
 		});
 	}
@@ -232,6 +262,21 @@ class instance extends instance_skel {
 				break;
 			case 'startAllMeasurements':
 				this.startAllMeasurements(opt.tabName);
+				break;
+			case 'startGenerator':
+				this.generatorState(true);
+				break;
+			case 'stopGenerator':
+				this.generatorState(false);
+				break;
+			case 'setGeneratorLevel':
+				this.setGeneratorLevel(opt.level);
+				break;
+			case 'startTrackingAll':
+				this.trackingState(true);
+				break;
+			case 'stopTrackingAll':
+				this.trackingState(false);
 				break;
 		}
 	}
@@ -303,6 +348,61 @@ class instance extends instance_skel {
 			]
 		};
 
+		this.sendData(payload);
+	}
+
+	/**
+	 * Sends command to turn the generator on or off
+	 * @access public
+	 * @since 1.0.0
+	 */
+	generatorState(state) {
+		let payload = {
+			"sequenceNumber":13,
+			"action":"set",
+			"target":"signalGenerator",
+			"properties": [
+				{ "active":state }
+			]
+		};
+
+		this.sendData(payload);
+	}
+
+	/**
+	 * Sends command to set the generator level
+	 * @access public
+	 * @since 1.0.0
+	 */
+	setGeneratorLevel(level) {
+		let payload = {
+		    "sequenceNumber":14,
+		    "action":"set",
+		    "target":"signalGenerator",
+		    "properties": [
+		        { "gain":level }
+		    ]
+		};
+
+		this.sendData(payload);
+	}
+
+	/**
+	 * Sends command to turn tracking for an entire tab on or off
+	 * @access public
+	 * @since 1.0.0
+	 */
+	trackingState(state) {
+		let payload = {
+			"sequenceNumber":15,
+			"action":"set",
+			"target": {
+				"measurementName": "allTransferFunctionMeasurements"
+			},
+			"properties": [
+				{ "trackingDelay": state }
+			]
+		};
 		this.sendData(payload);
 	}
 
