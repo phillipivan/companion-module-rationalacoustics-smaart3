@@ -187,7 +187,9 @@ class instance extends instance_skel {
 	 */
 	actions(system) {
 		this.setActions({
-			'resetAvg': { label: 'Reset Average'},
+			'resetAvg': {
+				label: 'Reset Average'
+			},
 			'selectTabByName': {
 				label: 'Select Tab By Name',
 				options: [
@@ -237,7 +239,230 @@ class instance extends instance_skel {
 			'stopTrackingAll': {
 				label: 'Stop delay tracking for current tab',
 				options: []
+			},
+			'zoomX': {
+				label: 'Zoom X Axis',
+				options: [
+					{
+						type: 'dropdown',
+						label: 'Direction',
+						id: 'selectedDirection',
+						default: '+',
+						tooltip: 'Which direction do you want?',
+						choices: [
+						{ id: '+', label: 'In' },
+						{ id: '-', label: 'Out' }
+						],
+						minChoicesForSearch: 0
+					}
+				]
+			},
+			'zoomY': {
+				label: 'Zoom Y Axis',
+				options: [
+					{
+						type: 'dropdown',
+						label: 'Direction',
+						id: 'selectedDirection',
+						default: '+',
+						tooltip: 'Which direction do you want?',
+						choices: [
+						{ id: '+', label: 'In' },
+						{ id: '-', label: 'Out' }
+						],
+						minChoicesForSearch: 0
+					}
+				]
+			},
+			'zoomXY': {
+				label: 'Zoom X and Y Axis',
+				options: [
+					{
+						type: 'dropdown',
+						label: 'Direction',
+						id: 'selectedDirection',
+						default: '+',
+						tooltip: 'Which direction do you want?',
+						choices: [
+						{ id: '+', label: 'In' },
+						{ id: '-', label: 'Out' }
+						],
+						minChoicesForSearch: 0
+					}
+				]
+			},
+			'setZoomPreset': {
+				label: 'Set Zoom Preset',
+				options: [
+					{
+						type: 'dropdown',
+						label: 'Preset',
+						id: 'zoomPreset',
+						default: '5', //Default Zoom
+						tooltip: 'Which zoom preset do you want?',
+						choices: [
+						{ id: '5', label: 'Default zoom' },
+						{ id: '1', label: 'Zoom 1' },
+						{ id: '2', label: 'Zoom 2' },
+						{ id: '3', label: 'Zoom 3' },
+						{ id: '4', label: 'Zoom 4' }
+						],
+						minChoicesForSearch: 0
+					}
+				]
+			},
+			'arrowKeys': {
+				label: 'Send Arrow Keys',
+				options: [
+					{
+						type: 'dropdown',
+						label: 'Direction',
+						id: 'selectedDirection',
+						default: 'up',
+						tooltip: 'Which direction do you want?',
+						choices: [
+						{ id: 'up', label: 'Up' },
+						{ id: 'down', label: 'Down' },
+						{ id: 'left', label: 'Left' },
+						{ id: 'right', label: 'Right' }
+						],
+						minChoicesForSearch: 0
+					}
+				]
+			},
+			'cycleZOrder': {
+				label: 'Cycle Z Order',
+				options: [
+					{
+						type: 'dropdown',
+						label: 'Direction',
+						id: 'selectedDirection',
+						default: 'forward',
+						tooltip: 'Which direction do you want?',
+						choices: [
+						{ id: 'forward', label: 'Forward' },
+						{ id: 'backward', label: 'Backward' }
+						],
+						minChoicesForSearch: 0
+					}
+				]
+			},
+			'hideTrace': {
+				label: 'Hide Trace'
+			},
+			'hideAllTraces': {
+				label: 'Hide All Traces'
+			},
+			'togglePeakHold': {
+				label: 'Toggle Peak Hold'
+			},
+			'toggleInputMeters': {
+				label: 'Toggle Input Meters'
+			},
+			'toggleInputMeterOrientation': {
+				label: 'Toggle Input Meter Orientation'
+			},
+			'toggleSPLHistory': {
+				label: 'Toggle SPL History'
+			},
+			'toggleMeters': {
+				label: 'Toggle SPL Meters'
+			},
+			'selectViewPreset': {
+				label: 'Select View Preset',
+				options: [
+					{
+						type: 'dropdown',
+						label: 'Preset',
+						id: 'viewPreset',
+						default: 'S', //Default Zoom
+						tooltip: 'Which zoom preset do you want?',
+						choices: [
+						{ id: 'S', label: 'Spectrum' },
+						{ id: 'T', label: 'Transfer' },
+						{ id: '1', label: 'User View 1' },
+						{ id: '2', label: 'User View 2' },
+						{ id: '3', label: 'User View 3' },
+						{ id: '4', label: 'User View 4' },
+						{ id: '5', label: 'User View 5' },
+						{ id: '6', label: 'User View 6' },
+						{ id: '7', label: 'User View 7' },
+						{ id: '8', label: 'User View 8' },
+						{ id: '9', label: 'User View 9' },
+						{ id: '0', label: 'Multi-Spectrum' }
+						],
+						minChoicesForSearch: 0
+					}
+				]
+			},
+			'moveFrontTrace': {
+				label: 'Trace Y Offset',
+				options: [
+					{
+						type: 'dropdown',
+						label: 'Direction',
+						id: 'selectedDirection',
+						default: 'up',
+						tooltip: 'Which direction do you want?',
+						choices: [
+						{ id: 'up', label: 'Up' },
+						{ id: 'down', label: 'Down' }
+						],
+						minChoicesForSearch: 0
+					}
+				]
+			},
+			'clearTraceOffset': {
+				label: 'Clear Top Trace Y Offset'
+			},
+			'clearAllTraceOffset': {
+				label: 'Clear All Y Offsets'
+			},
+			'toggleBar': {
+				label: 'Toggle Bar',
+				options: [
+					{
+						type: 'dropdown',
+						label: 'Bar',
+						id: 'selectedBar',
+						default: 'O',
+						tooltip: 'Which direction do you want?',
+						choices: [
+						{ id: 'O', label: 'Control' },
+						{ id: 'U', label: 'Command' },
+						{ id: 'B', label: 'Data' }
+						],
+						minChoicesForSearch: 0
+					}
+				]
+			},
+			'lockCursorToPeak': {
+				label: 'Lock Cursor To Peak'
+			},
+			'clearLockedCursor': {
+				label: 'Clear Locked Cursor'
+			},
+			'moveLockedCursor': {
+				label: 'Move Locked Cursor',
+				options: [
+					{
+						type: 'dropdown',
+						label: 'Direction',
+						id: 'selectedDirection',
+						default: 'left',
+						tooltip: 'Which direction do you want?',
+						choices: [
+						{ id: 'left', label: 'Left' },
+						{ id: 'right', label: 'Right' }
+						],
+						minChoicesForSearch: 0
+					}
+				]
+			},
+			'cyclePlot':{
+				label: 'Cycle Preferred Plot'
 			}
+
 		});
 	}
 
@@ -277,6 +502,78 @@ class instance extends instance_skel {
 				break;
 			case 'stopTrackingAll':
 				this.trackingState(false);
+				break;
+			case 'zoomX':
+				this.issueCommand('option + command'+opt.selectedDirection);
+				break;
+			case 'zoomY':
+				this.issueCommand(opt.selectedDirection);
+				break;
+			case 'zoomXY':
+				this.issueCommand('command'+opt.selectedDirection);
+				break;
+			case 'setZoomPreset':
+				this.issueCommand("option + "+opt.zoomPreset);
+				break;
+			case 'arrowKeys':
+				//ToDo: This looks to have issues with their documented method
+				this.issueCommand('cursor '+opt.selectedDirection);
+				break;
+			case 'cycleZOrder':
+				if(opt.selectedDirection == 'forward'){
+					this.issueCommand('Z');
+				}
+				else if (opt.selectedDirection == 'backward') {
+					this.issueCommand('shift + Z');
+				}
+				break;
+			case 'hideTrace':
+				this.issueCommand('H');
+				break;
+			case 'hideAllTraces':
+				this.issueCommand('shift + command + H');
+				break;
+			case 'togglePeakHold':
+				this.issueCommand('P');
+				break;
+			case 'toggleInputMeters':
+				this.issueCommand('shift + E');
+				break;
+			case 'toggleInputMeterOrientation':
+				this.issueCommand('shift + option + E');
+				break;
+			case 'toggleSPLHistory':
+				this.issueCommand('option H');
+				break;
+			case 'toggleMeters':
+				this.issueCommand('E');
+				break;
+			case 'selectViewPreset':
+				this.issueCommand(opt.viewPreset);
+				break;
+			case 'moveFrontTrace':
+				this.issueCommand('command + cursor '+opt.selectedDirection);
+				break;
+			case 'clearTraceOffset':
+				this.issueCommand('Y');
+				break;
+			case 'clearAllTraceOffset':
+				this.issueCommand('command + Y');
+				break;
+			case 'toggleBar':
+				this.issueCommand(opt.selectedBar);
+				break;
+			case 'lockCursorToPeak':
+				this.issueCommand('command + P');
+				break;
+			case 'clearLockedCursor':
+				this.issueCommand('command + X');
+				break;
+			case 'moveLockedCursor':
+				this.issueCommand('command + cursor '+opt.selectedDirection);
+				break;
+			case 'cyclePlot':
+				this.issueCommand("M");
 				break;
 		}
 	}
@@ -403,6 +700,23 @@ class instance extends instance_skel {
 				{ "trackingDelay": state }
 			]
 		};
+		this.sendData(payload);
+	}
+
+	/**
+	 * Sends command to issueCommand handler
+	 * @access public
+	 * @since 1.0.0
+	 */
+	issueCommand(command) {
+		let payload = {
+			"sequenceNumber":16,
+			"action":"issueCommand",
+			"properties": [
+				{ "keypress": command }
+			]
+		};
+		console.log(payload);
 		this.sendData(payload);
 	}
 
