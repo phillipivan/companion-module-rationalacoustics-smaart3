@@ -11,8 +11,6 @@ class instance extends instance_skel {
 		this.closing = false;
 
 		this.actions(); // export actions
-
-		return this;
 	}
 
 	/**
@@ -56,7 +54,7 @@ class instance extends instance_skel {
 		}
 
 		this.log('info', 'Attempting to reconnect in ' + timeout + ' seconds.');
-		this.reconnecting = setTimeout(this.login.bind(this, true), timeout * 1000);
+		this.reconnecting = setTimeout(this.login.bind(this), timeout * 1000);
 	}
 
 	/**
@@ -92,10 +90,8 @@ class instance extends instance_skel {
 		});
 
 		this.socket.on('close', (code, reason) => {
+			this.status(this.STATUS_ERROR, 'Disconnected from Smaart');
 			if(!this.closing){
-				this.status(this.STATUS_ERROR, 'Not connected to Smaart');
-				console.log(code);
-				console.log(reason);
 				this.keep_login_retry(this.RECONNECT_TIMEOUT);
 			}
 		});
@@ -113,7 +109,6 @@ class instance extends instance_skel {
 				}
 				else{
 					this.status(this.STATUS_OK);
-					console.log(message);
 
 					if((jsonMsg['sequenceNumber'] === 1) && (jsonMsg['response']['authenticationRequired'])) {
 						this.log('info', 'Authenticating');
@@ -555,118 +550,6 @@ class instance extends instance_skel {
 			}
 		});
 	}
-
-	/**
-	 * Executes the action
-	 * @param {Object} action Action to execute
-	 * @access public
-	 * @since 1.0.0
-	 */
-/*	action(action) {
-		var opt = action.options;
-
-		switch (action.action) {
-			case 'resetAvg':
-				this.resetAvg();
-				break;
-			case 'selectTabByName':
-				this.selectTab(opt.tabName);
-				break;
-			case 'selectTabByDrop':
-				this.selectTab(opt.tabName);
-				break;
-			case 'startAllMeasurements':
-				this.startAllMeasurements(opt.tabName);
-				break;
-			case 'startGenerator':
-				this.generatorState(true);
-				break;
-			case 'stopGenerator':
-				this.generatorState(false);
-				break;
-			case 'setGeneratorLevel':
-				this.setGeneratorLevel(opt.level);
-				break;
-			case 'startTrackingAll':
-				this.trackingState(true);
-				break;
-			case 'stopTrackingAll':
-				this.trackingState(false);
-				break;
-			case 'zoomX':
-				this.issueCommand('option + command'+opt.selectedDirection);
-				break;
-			case 'zoomY':
-				this.issueCommand(opt.selectedDirection);
-				break;
-			case 'zoomXY':
-				this.issueCommand('command'+opt.selectedDirection);
-				break;
-			case 'setZoomPreset':
-				this.issueCommand("option + "+opt.zoomPreset);
-				break;
-			case 'arrowKeys':
-				//ToDo: This looks to have issues with their documented method
-				this.issueCommand('cursor '+opt.selectedDirection);
-				break;
-			case 'cycleZOrder':
-				if(opt.selectedDirection == 'forward'){
-					this.issueCommand('Z');
-				}
-				else if (opt.selectedDirection == 'backward') {
-					this.issueCommand('shift + Z');
-				}
-				break;
-			case 'hideTrace':
-				this.issueCommand('H');
-				break;
-			case 'hideAllTraces':
-				this.issueCommand('shift + command + H');
-				break;
-			case 'togglePeakHold':
-				this.issueCommand('P');
-				break;
-			case 'toggleInputMeters':
-				this.issueCommand('shift + E');
-				break;
-			case 'toggleInputMeterOrientation':
-				this.issueCommand('shift + option + E');
-				break;
-			case 'toggleSPLHistory':
-				this.issueCommand('option H');
-				break;
-			case 'toggleMeters':
-				this.issueCommand('E');
-				break;
-			case 'selectViewPreset':
-				this.issueCommand(opt.viewPreset);
-				break;
-			case 'moveFrontTrace':
-				this.issueCommand('command + cursor '+opt.selectedDirection);
-				break;
-			case 'clearTraceOffset':
-				this.issueCommand('Y');
-				break;
-			case 'clearAllTraceOffset':
-				this.issueCommand('command + Y');
-				break;
-			case 'toggleBar':
-				this.issueCommand(opt.selectedBar);
-				break;
-			case 'lockCursorToPeak':
-				this.issueCommand('command + P');
-				break;
-			case 'clearLockedCursor':
-				this.issueCommand('command + X');
-				break;
-			case 'moveLockedCursor':
-				this.issueCommand('command + cursor '+opt.selectedDirection);
-				break;
-			case 'cyclePlot':
-				this.issueCommand("M");
-				break;
-		}
-	}*/
 
 	sendData(jsonPayload) {
 		if(this.socket != undefined){
