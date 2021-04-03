@@ -188,7 +188,10 @@ class instance extends instance_skel {
 	actions(system) {
 		this.setActions({
 			'resetAvg': {
-				label: 'Reset Average'
+				label: 'Reset Average',
+				callback: (action) => {
+					this.resetAvg();
+				}
 			},
 			'selectTabByName': {
 				label: 'Select Tab By Name',
@@ -198,7 +201,10 @@ class instance extends instance_skel {
 						label: 'Tab Name',
 						id: 'tabName'
 					}
-				]
+				],
+				callback: (action) => {
+					this.selectTab(action.options.tabName);
+				}
 			},
 			'startAllMeasurements': {
 				label: 'Start Measurements By Tab Name',
@@ -208,15 +214,22 @@ class instance extends instance_skel {
 						label: 'Tab Name',
 						id: 'tabName'
 					}
-				]
+				],
+				callback: (action) => {
+					this.startAllMeasurements(action.options.tabName);
+				}
 			},
 			'startGenerator': {
 				label: 'Start signal generator',
-				options: []
+				callback: (action) => {
+					this.generatorState(true);
+				}
 			},
 			'stopGenerator': {
 				label: 'Stop signal generator',
-				options: []
+				callback: (action) => {
+					this.generatorState(false);
+				}
 			},
 			'setGeneratorLevel': {
 				label: 'Set Generator Level',
@@ -230,15 +243,22 @@ class instance extends instance_skel {
 					default: 0,
 					required: true
 					}
-				]
+				],
+				callback: (action) => {
+					this.setGeneratorLevel(action.options.level);
+				}
 			},
 			'startTrackingAll': {
 				label: 'Start delay tracking for current tab',
-				options: []
+				callback: (action) => {
+					this.trackingState(true);
+				}
 			},
 			'stopTrackingAll': {
 				label: 'Stop delay tracking for current tab',
-				options: []
+				callback: (action) => {
+					this.trackingState(false);
+				}
 			},
 			'zoomX': {
 				label: 'Zoom X Axis',
@@ -255,7 +275,10 @@ class instance extends instance_skel {
 						],
 						minChoicesForSearch: 0
 					}
-				]
+				],
+				callback: (action) => {
+					this.issueCommand('option + command'+action.options.selectedDirection);
+				}
 			},
 			'zoomY': {
 				label: 'Zoom Y Axis',
@@ -272,7 +295,10 @@ class instance extends instance_skel {
 						],
 						minChoicesForSearch: 0
 					}
-				]
+				],
+				callback: (action) => {
+					this.issueCommand(action.options.selectedDirection);
+				}
 			},
 			'zoomXY': {
 				label: 'Zoom X and Y Axis',
@@ -289,7 +315,10 @@ class instance extends instance_skel {
 						],
 						minChoicesForSearch: 0
 					}
-				]
+				],
+				callback: (action) => {
+					this.issueCommand('command'+action.options.selectedDirection);
+				}
 			},
 			'setZoomPreset': {
 				label: 'Set Zoom Preset',
@@ -309,7 +338,10 @@ class instance extends instance_skel {
 						],
 						minChoicesForSearch: 0
 					}
-				]
+				],
+				callback: (action) => {
+					this.issueCommand("option + "+action.options.zoomPreset);
+				}
 			},
 			'arrowKeys': {
 				label: 'Send Arrow Keys',
@@ -328,7 +360,10 @@ class instance extends instance_skel {
 						],
 						minChoicesForSearch: 0
 					}
-				]
+				],
+				callback: (action) => {
+					this.issueCommand('cursor '+action.options.selectedDirection);
+				}
 			},
 			'cycleZOrder': {
 				label: 'Cycle Z Order',
@@ -345,28 +380,57 @@ class instance extends instance_skel {
 						],
 						minChoicesForSearch: 0
 					}
-				]
+				],
+				callback: (action) => {
+					if(action.options.selectedDirection == 'forward'){
+						this.issueCommand('Z');
+					}
+					else if (action.options.selectedDirection == 'backward') {
+						this.issueCommand('shift + Z');
+					}
+				}
 			},
 			'hideTrace': {
-				label: 'Hide Trace'
+				label: 'Hide Trace',
+				callback: (action) => {
+					this.issueCommand('H');
+				}
 			},
 			'hideAllTraces': {
-				label: 'Hide All Traces'
+				label: 'Hide All Traces',
+				callback: (action) => {
+					this.issueCommand('shift + command + H');
+				}
 			},
 			'togglePeakHold': {
-				label: 'Toggle Peak Hold'
+				label: 'Toggle Peak Hold',
+				callback: (action) => {
+					this.issueCommand('P');
+				}
 			},
 			'toggleInputMeters': {
-				label: 'Toggle Input Meters'
+				label: 'Toggle Input Meters',
+				callback: (action) => {
+					this.issueCommand('shift + E');
+				}
 			},
 			'toggleInputMeterOrientation': {
-				label: 'Toggle Input Meter Orientation'
+				label: 'Toggle Input Meter Orientation',
+				callback: (action) => {
+					this.issueCommand('shift + option + E');
+				}
 			},
 			'toggleSPLHistory': {
-				label: 'Toggle SPL History'
+				label: 'Toggle SPL History',
+				callback: (action) => {
+					this.issueCommand('option + H');
+				}
 			},
 			'toggleMeters': {
-				label: 'Toggle SPL Meters'
+				label: 'Toggle SPL Meters',
+				callback: (action) => {
+					this.issueCommand('E');
+				}
 			},
 			'selectViewPreset': {
 				label: 'Select View Preset',
@@ -393,7 +457,10 @@ class instance extends instance_skel {
 						],
 						minChoicesForSearch: 0
 					}
-				]
+				],
+				callback: (action) => {
+					this.issueCommand(action.options.viewPreset);
+				}
 			},
 			'moveFrontTrace': {
 				label: 'Trace Y Offset',
@@ -410,13 +477,22 @@ class instance extends instance_skel {
 						],
 						minChoicesForSearch: 0
 					}
-				]
+				],
+				callback: (action) => {
+					this.issueCommand('command + cursor '+action.options.selectedDirection);
+				}
 			},
 			'clearTraceOffset': {
-				label: 'Clear Top Trace Y Offset'
+				label: 'Clear Top Trace Y Offset',
+				callback: (action) => {
+					this.issueCommand('Y');
+				}
 			},
 			'clearAllTraceOffset': {
-				label: 'Clear All Y Offsets'
+				label: 'Clear All Y Offsets',
+				callback: (action) => {
+					this.issueCommand('command + Y');
+				}
 			},
 			'toggleBar': {
 				label: 'Toggle Bar',
@@ -434,13 +510,22 @@ class instance extends instance_skel {
 						],
 						minChoicesForSearch: 0
 					}
-				]
+				],
+				callback: (action) => {
+					this.issueCommand(action.options.selectedBar);
+				}
 			},
 			'lockCursorToPeak': {
-				label: 'Lock Cursor To Peak'
+				label: 'Lock Cursor To Peak',
+				callback: (action) => {
+					this.issueCommand('command + P');
+				}
 			},
 			'clearLockedCursor': {
-				label: 'Clear Locked Cursor'
+				label: 'Clear Locked Cursor',
+				callback: (action) => {
+					this.issueCommand('command + X');
+				}
 			},
 			'moveLockedCursor': {
 				label: 'Move Locked Cursor',
@@ -457,12 +542,17 @@ class instance extends instance_skel {
 						],
 						minChoicesForSearch: 0
 					}
-				]
+				],
+				callback: (action) => {
+					this.issueCommand('command + cursor '+action.options.selectedDirection);
+				}
 			},
 			'cyclePlot':{
-				label: 'Cycle Preferred Plot'
+				label: 'Cycle Preferred Plot',
+				callback: (action) => {
+					this.issueCommand("M");
+				}
 			}
-
 		});
 	}
 
@@ -472,7 +562,7 @@ class instance extends instance_skel {
 	 * @access public
 	 * @since 1.0.0
 	 */
-	action(action) {
+/*	action(action) {
 		var opt = action.options;
 
 		switch (action.action) {
@@ -576,7 +666,7 @@ class instance extends instance_skel {
 				this.issueCommand("M");
 				break;
 		}
-	}
+	}*/
 
 	sendData(jsonPayload) {
 		if(this.socket != undefined){
