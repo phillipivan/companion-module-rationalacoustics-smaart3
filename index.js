@@ -700,6 +700,11 @@ class instance extends instance_skel {
 	 */
 	logout() {
 		this.closing = true;
+		if(this.reconnecting) {
+			clearTimeout(this.reconnecting);
+			this.reconnecting = null;
+		}
+		
 		if (this.socket !== undefined) {
 			// Disconnect if already connected
 			if (this.socket.readyState !== 3 /*CLOSED*/) {
