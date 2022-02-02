@@ -1,6 +1,6 @@
 {
 	"name": "rationalacoustics-smaart3",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "Rational Acoustics Smaart(API V3) for Companion.",
 	"main": "index.js",
 	"scripts": {
