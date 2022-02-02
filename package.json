@@ -13,5 +13,14 @@
 	],
 	"manufacturer": "Rational Acoustics",
 	"product": "Smaart API V3",
-	"shortname": "Smaart-V3"
+	"shortname": "Smaart-V3",
+	"homepage": "https://github.com/bitfocus/companion-module-rationalacoustics-smaart3#readme",
+	"bugs": {
+		"url": "https://github.com/bitfocus/companion-module-rationalacoustics-smaart3/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/bitfocus/companion-module-rationalacoustics-smaart3.git"
+	},
+	"api_version": "1.0.0"
 }
