@@ -1,6 +1,6 @@
 {
 	"name": "rationalacoustics-smaart3",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "Rational Acoustics Smaart(API V3) for Companion.",
 	"main": "index.js",
 	"scripts": {
@@ -12,7 +12,10 @@
 		"Audio"
 	],
 	"manufacturer": "Rational Acoustics",
-	"product": "Smaart API V3",
+	"product": [
+		"Smaart V8.3 - V8.5",
+		"Smaart Di 2.1 and newer"
+	],
 	"shortname": "Smaart-V3",
 	"homepage": "https://github.com/bitfocus/companion-module-rationalacoustics-smaart3#readme",
 	"bugs": {
