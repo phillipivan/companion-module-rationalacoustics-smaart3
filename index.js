@@ -143,13 +143,14 @@ class instance extends instance_skel {
 				id: 'info',
 				width: 12,
 				label: 'Information',
-				value: 'This will connect with Rational Acoustics Smaart server.'
+				value: 'This will connect with Rational Acoustics Smaart server.<br> If using Smaart V9 or newer this module will not work!'
 			},
 			{
 				type: 'textinput',
 				id: 'host',
 				label: 'Target IP/hostname',
-				width: 12
+				width: 12,
+				regex: this.REGEX_HOSTNAME | this.REGEX_IP
 			},
 			{
 				type: 'textinput',
@@ -704,7 +705,7 @@ class instance extends instance_skel {
 			clearTimeout(this.reconnecting);
 			this.reconnecting = null;
 		}
-		
+
 		if (this.socket !== undefined) {
 			// Disconnect if already connected
 			if (this.socket.readyState !== 3 /*CLOSED*/) {
