@@ -22,7 +22,7 @@ class SmaartV3 extends InstanceBase {
 	 */
 
 	async init(config) {
-		await this.configUpdated(config)
+		this.configUpdated(config)
 		this.updateActions() // export actions
 		this.updateFeedbacks() // export feedbacks
 		this.updateVariableDefinitions() // export variable definitions
@@ -50,8 +50,8 @@ class SmaartV3 extends InstanceBase {
 		this.updateStatus(InstanceStatus.Connecting)
 
 		this.logout()
-		if (this.config.host && this.config.port) {
-			this.login(this.config.host, this.config.port)
+		if (config.host && config.port) {
+			await this.login(config.host, config.port)
 		}
 	}
 
@@ -178,7 +178,7 @@ class SmaartV3 extends InstanceBase {
 
 	/**
 	 * Try login again after timeout
-	 * @param {Int} timeout Timeout to try reconnection
+	 * @param {number} timeout Timeout to try reconnection
 	 * @access public
 	 * @since 1.0.0
 	 */
@@ -212,6 +212,13 @@ class SmaartV3 extends InstanceBase {
 		}
 	}
 
+	/**
+	 * Send data on websocket connection
+	 * @param {object} jsonPayload object to send as json serialised data
+	 * @access public
+	 * @since 1.0.0
+	 */
+
 	sendData(jsonPayload) {
 		if (this.socket != undefined && this.socket.readyState === WebSocket.OPEN) {
 			this.socket.send(JSON.stringify(jsonPayload))
@@ -242,6 +249,7 @@ class SmaartV3 extends InstanceBase {
 
 	/**
 	 * Sends command to change tabs
+	 * @param {string} tabName
 	 * @access public
 	 * @since 1.0.0
 	 */
@@ -262,6 +270,7 @@ class SmaartV3 extends InstanceBase {
 
 	/**
 	 * Sends command to start all measurments on a tab
+	 * @param {string} tabName
 	 * @access public
 	 * @since 1.0.0
 	 */
@@ -281,6 +290,7 @@ class SmaartV3 extends InstanceBase {
 
 	/**
 	 * Sends command to turn the generator on or off
+	 * @param {boolean} state
 	 * @access public
 	 * @since 1.0.0
 	 */
@@ -297,6 +307,7 @@ class SmaartV3 extends InstanceBase {
 
 	/**
 	 * Sends command to set the generator level
+	 * @param {number} level
 	 * @access public
 	 * @since 1.0.0
 	 */
@@ -313,6 +324,7 @@ class SmaartV3 extends InstanceBase {
 
 	/**
 	 * Sends command to turn tracking for an entire tab on or off
+	 * @param {boolean} state
 	 * @access public
 	 * @since 1.0.0
 	 */
@@ -330,6 +342,7 @@ class SmaartV3 extends InstanceBase {
 
 	/**
 	 * Sends command to issueCommand handler
+	 * @param {string} command
 	 * @access public
 	 * @since 1.0.0
 	 */
