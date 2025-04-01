@@ -37,3 +37,5 @@ Note:
 - Move Locked Cursor
 - selectedDirection
 - Cycle Preferred Plot
+- Capture Trace
+- Rename Trace

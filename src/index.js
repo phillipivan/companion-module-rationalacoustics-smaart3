@@ -4,8 +4,7 @@ import UpdateFeedbacks from './feedbacks.js'
 import UpgradeScripts from './upgrades.js'
 import UpdateVariableDefinitions from './variables.js'
 
-
-const RECONNECT_TIMEOUT = 10// Number of seconds to try reconnect
+const RECONNECT_TIMEOUT = 10 // Number of seconds to try reconnect
 
 class SmaartV3 extends InstanceBase {
 	constructor(internal) {
@@ -171,7 +170,7 @@ class SmaartV3 extends InstanceBase {
 				}
 			} catch (e) {
 				this.updateStatus(InstanceStatus.UnknownWarning)
-				this.log('warn', `Parsing Error. Message: ${jsonMsg}. Error: ${JSON.stringify(e)}`)
+				this.log('warn', `Parsing Error. ${JSON.stringify(e)}`)
 			}
 		})
 	}
@@ -337,6 +336,46 @@ class SmaartV3 extends InstanceBase {
 			},
 			properties: [{ trackingDelay: state }],
 		}
+		this.sendData(payload)
+	}
+
+	/**
+	 * Sends command to capture current trace
+	 * @param {string} traceName
+	 * @access public
+	 * @since 2.0.0
+	 */
+
+	captureTrace(traceName) {
+		const payload = {
+			sequenceNumber: 42,
+			action: 'capture',
+			target: {
+				measurementName: traceName,
+			},
+		}
+		this.log('debug', `captureTrace: ${JSON.stringify(payload)}`)
+		this.sendData(payload)
+	}
+
+	/**
+	 * Sends command to capture current trace
+	 * @param {string} traceName
+	 * @param {string} tracePath
+	 * @access public
+	 * @since 2.0.0
+	 */
+
+	renameTrace(traceName, tracePath) {
+		const payload = {
+			sequenceNumber: 42,
+			action: 'set',
+			target: {
+				traceFilePath: tracePath,
+			},
+			properties: [{ name: traceName }],
+		}
+		this.log('debug', `renameTrace: ${JSON.stringify(payload)}`)
 		this.sendData(payload)
 	}
 

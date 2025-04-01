@@ -376,5 +376,45 @@ export default async function (self) {
 				self.issueCommand('M')
 			},
 		},
+		captureTrace: {
+			name: 'Capture Current Trace',
+			options: [
+				{
+					type: 'textinput',
+					label: 'Trace Name',
+					id: 'traceName',
+					useVariables: { local: true },
+					required: true,
+				},
+			],
+			callback: async (action, context) => {
+				self.captureTrace(await context.parseVariablesInString(action.options.traceName))
+			},
+		},
+		renameTrace: {
+			name: 'Rename Trace',
+			options: [
+				{
+					type: 'textinput',
+					label: 'Trace Name',
+					id: 'traceName',
+					useVariables: { local: true },
+					required: true,
+				},
+				{
+					type: 'textinput',
+					label: 'Trace File Path',
+					id: 'tracePath',
+					useVariables: { local: true },
+					required: true,
+				},
+			],
+			callback: async (action, context) => {
+				self.renameTrace(
+					await context.parseVariablesInString(action.options.traceName),
+					await context.parseVariablesInString(action.options.tracePath),
+				)
+			},
+		},
 	})
 }
