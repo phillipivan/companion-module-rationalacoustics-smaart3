@@ -47,13 +47,14 @@ class SmaartV3 extends InstanceBase {
 	 */
 
 	async configUpdated(config) {
-		this.config = config
 		queue.clear()
+		this.config = config
+		
 		this.updateStatus(InstanceStatus.Connecting)
 
 		this.logout()
 		if (config.host && config.port) {
-			await this.login(config.host, config.port)
+			this.login(config.host, config.port, config.password)
 		}
 	}
 
@@ -72,7 +73,7 @@ class SmaartV3 extends InstanceBase {
 				width: 12,
 				label: 'Information',
 				value:
-					'This will connect with Rational Acoustics Smaart server.<br> If using Smaart V9 or newer this module will not work!',
+					'This will connect with Rational Acoustics Smaart server.<br> If using Smaart V9 or newer this module will not work!<br> Set the API Command Timeout to 0ms to avoid reconnect events',
 			},
 			{
 				type: 'textinput',
@@ -80,6 +81,7 @@ class SmaartV3 extends InstanceBase {
 				label: 'Target IP/ Hostname',
 				width: 12,
 				regex: Regex.HOSTNAME | Regex.IP,
+				default: 'localhost',
 			},
 			{
 				type: 'textinput',
@@ -90,17 +92,11 @@ class SmaartV3 extends InstanceBase {
 				default: '26000',
 			},
 			{
-				type: 'static-text',
-				id: 'info',
-				width: 12,
-				label: 'Information',
-				value: 'If authentication is not used leave password blank.',
-			},
-			{
 				type: 'textinput',
 				id: 'password',
 				label: 'Password',
 				width: 6,
+				tooltip: 'If authentication is not used leave password blank',
 			},
 		]
 	}
@@ -112,7 +108,7 @@ class SmaartV3 extends InstanceBase {
 	 * @access public
 	 * @since 1.0.0
 	 */
-	async login(host, port) {
+	login(host, port, password) {
 		this.logout()
 
 		this.closing = false
@@ -148,41 +144,46 @@ class SmaartV3 extends InstanceBase {
 		})
 
 		this.socket.addEventListener('message', (message) => {
-			const jsonMsg = JSON.parse(message)
-			this.log('debug', `Message Recieved: ${message}`)
-			this.log('debug', `Parsed Message: ${JSON.stringify(jsonMsg)}`)
-			try {
-				if (jsonMsg?.response?.error != undefined) {
-					if (jsonMsg['response']['error'] === 'incorect password') {
-						this.updateStatus(InstanceStatus.AuthenticationFailure)
-						this.log('error', 'Password is incorrect.')
-						// this.keep_login_retry(10) Why retry if the password is incorrect?
-					}
-				} else {
-					this.updateStatus(InstanceStatus.Ok)
+			//this.log('debug', `message recieved: ${JSON.stringify(message)}`)
+			if (message.data !== undefined) {
+				try {
+					const jsonMsg = JSON.parse(message.data)
+					this.log('debug', `Parsed Message: ${JSON.stringify(jsonMsg)}`)
+					if (jsonMsg?.response?.error !== undefined) {
+						if (jsonMsg.response.error === 'incorect password') {
+							this.updateStatus(InstanceStatus.AuthenticationFailure)
+							this.log('error', 'Password is incorrect.')
+						} else {
+							this.updateStatus(InstanceStatus.UnknownWarning, jsonMsg.response.error)
+							this.log('warn',JSON.stringify(jsonMsg.response))
+						}
+					} else {
+						this.updateStatus(InstanceStatus.Ok)
 
-					if (jsonMsg?.sequenceNumber === 1 && jsonMsg?.response?.authenticationRequired) {
-						this.log('info', 'Authenticating')
-						this.sendData({
-							action: 'set',
-							properties: [
-								{
-									password: this.config.password,
-								},
-							],
-						})
+						if (jsonMsg?.sequenceNumber === 1 && jsonMsg?.response?.authenticationRequired) {
+							this.log('info', 'Authenticating')
+							this.sendData({
+								action: 'set',
+								properties: [
+									{
+										password: password,
+									},
+								],
+							})
+						}
 					}
+				} catch (e) {
+					this.updateStatus(InstanceStatus.UnknownWarning)
+					this.log('warn', `Parsing Error. ${JSON.stringify(e)}`)
 				}
-			} catch (e) {
-				this.updateStatus(InstanceStatus.UnknownWarning)
-				this.log('warn', `Parsing Error. ${JSON.stringify(e)}`)
 			}
+			
 		})
 	}
 
 	/**
 	 * Try login again after timeout
-	 * @param {number} timeout Timeout to try reconnection
+	 * @param {number} timeout Timeout in seconds to try reconnection
 	 * @access public
 	 * @since 1.0.0
 	 */
@@ -192,7 +193,7 @@ class SmaartV3 extends InstanceBase {
 		}
 
 		this.log('info', 'Attempting to reconnect in ' + timeout + ' seconds.')
-		this.reconnecting = setTimeout(this.login(this.config.host, this.config.port), timeout * 1000)
+		this.reconnecting = setTimeout((() => {this.login(this.config.host, this.config.port, this.config.password)}), timeout * 1000)
 	}
 
 	/**
