@@ -65,7 +65,7 @@ export default async function (self) {
 				},
 			],
 			callback: async (action) => {
-				this.setGeneratorLevel(action.options.level)
+				self.setGeneratorLevel(action.options.level)
 			},
 		},
 		startTrackingAll: {
@@ -98,7 +98,7 @@ export default async function (self) {
 				},
 			],
 			callback: async (action) => {
-				this.issueCommand('option + command' + action.options.selectedDirection)
+				self.issueCommand('option + command' + action.options.selectedDirection)
 			},
 		},
 		zoomY: {
@@ -117,7 +117,7 @@ export default async function (self) {
 				},
 			],
 			callback: async (action) => {
-				this.issueCommand(action.options.selectedDirection)
+				self.issueCommand(action.options.selectedDirection)
 			},
 		},
 		zoomXY: {
@@ -136,7 +136,7 @@ export default async function (self) {
 				},
 			],
 			callback: async (action) => {
-				this.issueCommand('command' + action.options.selectedDirection)
+				self.issueCommand('command' + action.options.selectedDirection)
 			},
 		},
 		setZoomPreset: {
@@ -158,7 +158,7 @@ export default async function (self) {
 				},
 			],
 			callback: async (action) => {
-				this.issueCommand('option + ' + action.options.zoomPreset)
+				self.issueCommand('option + ' + action.options.zoomPreset)
 			},
 		},
 		arrowKeys: {
@@ -179,7 +179,7 @@ export default async function (self) {
 				},
 			],
 			callback: async (action) => {
-				this.issueCommand('cursor ' + action.options.selectedDirection)
+				self.issueCommand('cursor ' + action.options.selectedDirection)
 			},
 		},
 		cycleZOrder: {
@@ -201,7 +201,7 @@ export default async function (self) {
 				if (action.options.selectedDirection == 'forward') {
 					self.issueCommand('Z')
 				} else if (action.options.selectedDirection == 'backward') {
-					this.issueCommand('shift + Z')
+					self.issueCommand('shift + Z')
 				}
 			},
 		},
@@ -376,7 +376,7 @@ export default async function (self) {
 				self.issueCommand('M')
 			},
 		},
-		captureTrace: {
+		/* 		captureTrace: {
 			name: 'Capture Current Trace',
 			options: [
 				{
@@ -415,6 +415,6 @@ export default async function (self) {
 					await context.parseVariablesInString(action.options.tracePath),
 				)
 			},
-		},
+		}, */
 	})
 }
