@@ -1,11 +1,14 @@
 # Smaart Companion Module
+
 This module allows for control of Smaart V8.3 and Smaart Di 2.1 and newer using API V3.
 
 Note:
+
 - The API must be enabled via the API menu.
 - Some actions require Smaart V8.5 or newer.
 
 ## Features
+
 - Clear All Y Offsets
 - Clear Locked Cursor
 - Clear Top Trace Y Offset

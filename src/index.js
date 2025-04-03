@@ -49,7 +49,7 @@ class SmaartV3 extends InstanceBase {
 	async configUpdated(config) {
 		queue.clear()
 		this.config = config
-		
+
 		this.updateStatus(InstanceStatus.Connecting)
 
 		this.logout()
@@ -155,7 +155,7 @@ class SmaartV3 extends InstanceBase {
 							this.log('error', 'Password is incorrect.')
 						} else {
 							this.updateStatus(InstanceStatus.UnknownWarning, jsonMsg.response.error)
-							this.log('warn',JSON.stringify(jsonMsg.response))
+							this.log('warn', JSON.stringify(jsonMsg.response))
 						}
 					} else {
 						this.updateStatus(InstanceStatus.Ok)
@@ -177,7 +177,6 @@ class SmaartV3 extends InstanceBase {
 					this.log('warn', `Parsing Error. ${JSON.stringify(e)}`)
 				}
 			}
-			
 		})
 	}
 
@@ -193,7 +192,9 @@ class SmaartV3 extends InstanceBase {
 		}
 
 		this.log('info', 'Attempting to reconnect in ' + timeout + ' seconds.')
-		this.reconnecting = setTimeout((() => {this.login(this.config.host, this.config.port, this.config.password)}), timeout * 1000)
+		this.reconnecting = setTimeout(() => {
+			this.login(this.config.host, this.config.port, this.config.password)
+		}, timeout * 1000)
 	}
 
 	/**

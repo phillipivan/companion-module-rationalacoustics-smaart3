@@ -25,11 +25,6 @@
 		"entrypoint": "../src/index.js"
 	},
 	"manufacturer": "Rational Acoustics",
-	"products": [
-		"Smaart V8.3 - V8.5",
-		"Smaart Di 2.1 and newer"
-	],
-	"keywords": [
-		"Audio"
-	]
+	"products": ["Smaart V8.3 - V8.5", "Smaart Di 2.1 and newer"],
+	"keywords": ["Audio"]
 }
