@@ -87,6 +87,7 @@ class SmaartV3 extends InstanceBase {
 				label: 'Target Port',
 				width: 12,
 				regex: Regex.PORT,
+				default: '26000',
 			},
 			{
 				type: 'static-text',
