@@ -21,7 +21,8 @@
 		"prettier": "~3.5.3"
 	},
 	"dependencies": {
-		"@companion-module/base": "~1.11.3"
+		"@companion-module/base": "~1.11.3",
+		"p-queue": "~8.1.0"
 	},
 	"engines": {
 		"node": "^22.13"
