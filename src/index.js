@@ -1,5 +1,6 @@
 import { InstanceBase, runEntrypoint, InstanceStatus, Regex } from '@companion-module/base'
 import UpdateActions from './actions.js'
+import { errors } from './errors.js'
 import UpdateFeedbacks from './feedbacks.js'
 import UpgradeScripts from './upgrades.js'
 import UpdateVariableDefinitions from './variables.js'
@@ -150,12 +151,12 @@ class SmaartV3 extends InstanceBase {
 					const jsonMsg = JSON.parse(message.data)
 					this.log('debug', `Parsed Message: ${JSON.stringify(jsonMsg)}`)
 					if (jsonMsg?.response?.error !== undefined) {
-						if (jsonMsg.response.error === 'incorect password') {
-							this.updateStatus(InstanceStatus.AuthenticationFailure)
-							this.log('error', 'Password is incorrect.')
-						} else {
-							this.updateStatus(InstanceStatus.UnknownWarning, jsonMsg.response.error)
-							this.log('warn', JSON.stringify(jsonMsg.response))
+						for (const error of errors) {
+							if (jsonMsg.response.error === error.id) {
+								this.log(error.logLevel, error.description)
+								this.updateStatus(error.status, error.statusDescription)
+								break
+							}
 						}
 					} else {
 						this.updateStatus(InstanceStatus.Ok)
