@@ -6,36 +6,33 @@ Note:
 - Some actions require Smaart V8.5 or newer.
 
 ## Features
+- Clear All Y Offsets
+- Clear Locked Cursor
+- Clear Top Trace Y Offset
+- Cycle Preferred Plot
+- Cycle Z Order
+- Hide All Traces
+- Hide Trace
+- Lock Cursor To Peak
+- Move Locked Cursor
 - Reset Active Tab Measurement Averages
+- Send Arrow Keys (Requires Smaart to have focus)
 - Select Tab By Name
+- Select View Preset
+- Set Generator Level
+- Set Zoom Preset
+- Start delay tracking for current tab
 - Start Measurements By Tab Name
 - Start signal generator
-- Stop signal generator
-- Set Generator Level
-- Start delay tracking for current tab
 - Stop delay tracking for current tab
-- Zoom X Axis
-- Zoom Y Axis
-- Zoom X and Y Axis
-- Set Zoom Preset
-- Send Arrow Keys (Requires Smaart to have focus)
-- Cycle Z Order
-- Hide Trace
-- Hide All Traces
-- Toggle Peak Hold
-- Toggle Input Meters
+- Stop signal generator
+- Toggle Bar
 - Toggle Input Meter Orientation
+- Toggle Input Meters
+- Toggle Peak Hold
 - Toggle SPL History
 - Toggle SPL Meters
-- Select View Preset
 - Trace Y Offset
-- Clear Top Trace Y Offset
-- Clear All Y Offsets
-- Toggle Bar
-- Lock Cursor To Peak
-- Clear Locked Cursor
-- Move Locked Cursor
-- selectedDirection
-- Cycle Preferred Plot
-- Capture Trace
-- Rename Trace
+- Zoom X Axis
+- Zoom X and Y Axis
+- Zoom Y Axis
