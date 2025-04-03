@@ -3,8 +3,10 @@ import UpdateActions from './actions.js'
 import UpdateFeedbacks from './feedbacks.js'
 import UpgradeScripts from './upgrades.js'
 import UpdateVariableDefinitions from './variables.js'
+import PQueue from 'p-queue'
 
 const RECONNECT_TIMEOUT = 10 // Number of seconds to try reconnect
+const queue = new PQueue({ concurrency: 1, interval: 10, intervalCap: 1 })
 
 class SmaartV3 extends InstanceBase {
 	constructor(internal) {
@@ -33,6 +35,7 @@ class SmaartV3 extends InstanceBase {
 	 */
 	async destroy() {
 		this.log('debug', `destroy ${this.id}:${this.label}`)
+		queue.clear()
 		this.logout()
 	}
 
@@ -45,7 +48,7 @@ class SmaartV3 extends InstanceBase {
 
 	async configUpdated(config) {
 		this.config = config
-
+		queue.clear()
 		this.updateStatus(InstanceStatus.Connecting)
 
 		this.logout()
@@ -144,19 +147,20 @@ class SmaartV3 extends InstanceBase {
 		})
 
 		this.socket.addEventListener('message', (message) => {
+			const jsonMsg = JSON.parse(message)
+			this.log('debug', `Message Recieved: ${message}`)
+			this.log('debug', `Parsed Message: ${JSON.stringify(jsonMsg)}`)
 			try {
-				let jsonMsg = JSON.parse(message)
-
-				if (jsonMsg['response']['error'] != undefined) {
+				if (jsonMsg?.response?.error != undefined) {
 					if (jsonMsg['response']['error'] === 'incorect password') {
 						this.updateStatus(InstanceStatus.AuthenticationFailure)
 						this.log('error', 'Password is incorrect.')
-						this.keep_login_retry(10)
+						// this.keep_login_retry(10) Why retry if the password is incorrect?
 					}
 				} else {
 					this.updateStatus(InstanceStatus.Ok)
 
-					if (jsonMsg['sequenceNumber'] === 1 && jsonMsg['response']['authenticationRequired']) {
+					if (jsonMsg?.sequenceNumber === 1 && jsonMsg?.response?.authenticationRequired) {
 						this.log('info', 'Authenticating')
 						this.sendData({
 							action: 'set',
@@ -218,12 +222,14 @@ class SmaartV3 extends InstanceBase {
 	 * @since 1.0.0
 	 */
 
-	sendData(jsonPayload) {
-		if (this.socket != undefined && this.socket.readyState === WebSocket.OPEN) {
-			this.socket.send(JSON.stringify(jsonPayload))
-		} else {
-			this.log('error', 'Not connected!')
-		}
+	async sendData(jsonPayload) {
+		await queue.add(() => {
+			if (this.socket != undefined && this.socket.readyState === WebSocket.OPEN) {
+				this.socket.send(JSON.stringify(jsonPayload))
+			} else {
+				this.log('error', 'Not connected!')
+			}
+		})
 	}
 
 	/**
@@ -346,7 +352,7 @@ class SmaartV3 extends InstanceBase {
 	 * @since 2.0.0
 	 */
 
-	captureTrace(traceName) {
+	/* captureTrace(traceName) {
 		const payload = {
 			sequenceNumber: 42,
 			action: 'capture',
@@ -356,7 +362,7 @@ class SmaartV3 extends InstanceBase {
 		}
 		this.log('debug', `captureTrace: ${JSON.stringify(payload)}`)
 		this.sendData(payload)
-	}
+	} */
 
 	/**
 	 * Sends command to capture current trace
@@ -366,7 +372,7 @@ class SmaartV3 extends InstanceBase {
 	 * @since 2.0.0
 	 */
 
-	renameTrace(traceName, tracePath) {
+	/* renameTrace(traceName, tracePath) {
 		const payload = {
 			sequenceNumber: 42,
 			action: 'set',
@@ -377,7 +383,7 @@ class SmaartV3 extends InstanceBase {
 		}
 		this.log('debug', `renameTrace: ${JSON.stringify(payload)}`)
 		this.sendData(payload)
-	}
+	} */
 
 	/**
 	 * Sends command to issueCommand handler
