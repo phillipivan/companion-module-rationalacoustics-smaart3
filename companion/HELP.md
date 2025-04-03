@@ -1,5 +1,7 @@
 # Smaart Companion Module
 
+Original module written by Todd Murphy
+
 This module allows for control of Smaart V8.3 and Smaart Di 2.1 and newer using API V3.
 
 Note:

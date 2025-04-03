@@ -9,10 +9,6 @@
 	"bugs": "https://github.com/bitfocus/companion-module-rationalacoustics-smaart3/issues",
 	"maintainers": [
 		{
-			"name": "Todd Murphy",
-			"email": "murphytodd4@gmail.com"
-		},
-		{
 			"name": "Phillip Ivan Pietruschka",
 			"email": "ivanpietruschka@gmail.com"
 		}
