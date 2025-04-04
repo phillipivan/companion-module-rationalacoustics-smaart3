@@ -36,6 +36,9 @@ class SmaartV3 extends InstanceBase {
 	 */
 	async destroy() {
 		this.log('debug', `destroy ${this.id}:${this.label}`)
+		if (this.keepAlive) {
+			clearTimeout(this.keepAlive)
+		}
 		queue.clear()
 		this.logout()
 	}
@@ -48,6 +51,9 @@ class SmaartV3 extends InstanceBase {
 	 */
 
 	async configUpdated(config) {
+		if (this.keepAlive) {
+			clearTimeout(this.keepAlive)
+		}
 		queue.clear()
 		this.config = config
 
@@ -74,7 +80,7 @@ class SmaartV3 extends InstanceBase {
 				width: 12,
 				label: 'Information',
 				value:
-					'This will connect with Rational Acoustics Smaart server.<br> If using Smaart V9 or newer this module will not work!<br> Set the API Command Timeout to 0ms to avoid reconnect events',
+					'This will connect with Rational Acoustics Smaart server.<br> If using Smaart V9 or newer this module will not work!<br> Set the API Command Timeout to > 2000ms to avoid reconnect events',
 			},
 			{
 				type: 'textinput',
@@ -126,7 +132,7 @@ class SmaartV3 extends InstanceBase {
 			this.updateStatus(InstanceStatus.Ok)
 			this.log('info', `Connected to ws://${host}:${port}/`)
 			this.sendData({
-				sequenceNumber: 1,
+				//sequenceNumber: 1,
 				action: 'get',
 			})
 		})
@@ -187,7 +193,7 @@ class SmaartV3 extends InstanceBase {
 	 * @access public
 	 * @since 1.0.0
 	 */
-	keep_login_retry(timeout) {
+	keep_login_retry(timeout = RECONNECT_TIMEOUT) {
 		if (this.reconnecting) {
 			return
 		}
@@ -220,6 +226,40 @@ class SmaartV3 extends InstanceBase {
 	}
 
 	/**
+	 * Sequence number generator
+	 * @returns {number} new sequence number
+	 * @access private
+	 * @since 2.1.0
+	 */
+
+	*sequenceNumber() {
+		let sequence = 0
+		while (true) {
+			sequence = sequence < 0xffff ? sequence + 1 : 0
+			yield sequence
+		}
+	}
+
+	/**
+	 * Start timer to send keepalive message
+	 * @access private
+	 * @since 2.1.0
+	 */
+
+	startKeepAlive() {
+		if (this.keepAlive) {
+			clearTimeout(this.keepAlive)
+		}
+		this.keepAlive = setTimeout(() => {
+			this.sendData({
+				//sequenceNumber: 1,
+				action: 'get',
+			})
+			delete this.keepAlive
+		}, 1000)
+	}
+
+	/**
 	 * Send data on websocket connection
 	 * @param {object} jsonPayload object to send as json serialised data
 	 * @access public
@@ -229,9 +269,11 @@ class SmaartV3 extends InstanceBase {
 	async sendData(jsonPayload) {
 		await queue.add(() => {
 			if (this.socket != undefined && this.socket.readyState === WebSocket.OPEN) {
+				jsonPayload.sequenceNumber = this.sequenceNumber().next().value
 				this.socket.send(JSON.stringify(jsonPayload))
+				this.startKeepAlive()
 			} else {
-				this.log('error', 'Not connected!')
+				this.log('warn', `Not connected! Tried to send:\n${JSON.stringify(jsonPayload)}`)
 			}
 		})
 	}
@@ -243,7 +285,7 @@ class SmaartV3 extends InstanceBase {
 	 */
 	resetAvg() {
 		const payload = {
-			sequenceNumber: 10,
+			//sequenceNumber: 10,
 			action: 'set',
 			target: 'activeMeasurements',
 			properties: [
@@ -264,7 +306,7 @@ class SmaartV3 extends InstanceBase {
 	 */
 	selectTab(tabName) {
 		const payload = {
-			sequenceNumber: 11,
+			//sequenceNumber: 11,
 			action: 'set',
 			target: 'tabs',
 			properties: [
@@ -285,7 +327,7 @@ class SmaartV3 extends InstanceBase {
 	 */
 	startAllMeasurements(tabName) {
 		const payload = {
-			sequenceNumber: 12,
+			//sequenceNumber: 12,
 			action: 'set',
 			target: {
 				tabName: tabName,
@@ -305,7 +347,7 @@ class SmaartV3 extends InstanceBase {
 	 */
 	generatorState(state) {
 		const payload = {
-			sequenceNumber: 13,
+			//sequenceNumber: 13,
 			action: 'set',
 			target: 'signalGenerator',
 			properties: [{ active: state }],
@@ -322,7 +364,7 @@ class SmaartV3 extends InstanceBase {
 	 */
 	setGeneratorLevel(level) {
 		const payload = {
-			sequenceNumber: 14,
+			//sequenceNumber: 14,
 			action: 'set',
 			target: 'signalGenerator',
 			properties: [{ gain: level }],
@@ -339,7 +381,7 @@ class SmaartV3 extends InstanceBase {
 	 */
 	trackingState(state) {
 		const payload = {
-			sequenceNumber: 15,
+			//sequenceNumber: 15,
 			action: 'set',
 			target: {
 				measurementName: 'allTransferFunctionMeasurements',
@@ -358,7 +400,7 @@ class SmaartV3 extends InstanceBase {
 
 	/* captureTrace(traceName) {
 		const payload = {
-			sequenceNumber: 42,
+			//sequenceNumber: 42,
 			action: 'capture',
 			target: {
 				measurementName: traceName,
@@ -378,7 +420,7 @@ class SmaartV3 extends InstanceBase {
 
 	/* renameTrace(traceName, tracePath) {
 		const payload = {
-			sequenceNumber: 42,
+			//sequenceNumber: 42,
 			action: 'set',
 			target: {
 				traceFilePath: tracePath,
@@ -397,7 +439,7 @@ class SmaartV3 extends InstanceBase {
 	 */
 	issueCommand(command) {
 		const payload = {
-			sequenceNumber: 16,
+			//sequenceNumber: 16,
 			action: 'issueCommand',
 			properties: [{ keypress: command }],
 		}
