@@ -1,6 +1,6 @@
 {
 	"name": "rationalacoustics-smaart3",
-	"version": "2.0.0",
+	"version": "2.1.0",
 	"description": "Rational Acoustics Smaart(API V3) for Companion.",
 	"main": "src/index.js",
 	"type": "module",
@@ -17,7 +17,7 @@
 	},
 	"devDependencies": {
 		"@companion-module/tools": "^2.2.2",
-		"eslint": "^9.23.0",
+		"eslint": "^9.24.0",
 		"prettier": "~3.5.3"
 	},
 	"dependencies": {
