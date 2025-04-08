@@ -11,6 +11,7 @@ Note:
 
 ## Features
 
+- Capture Current Trace
 - Clear All Y Offsets
 - Clear Locked Cursor
 - Clear Top Trace Y Offset
@@ -20,6 +21,7 @@ Note:
 - Hide Trace
 - Lock Cursor To Peak
 - Move Locked Cursor
+- Rename Trace
 - Reset Active Tab Measurement Averages
 - Send Arrow Keys (Requires Smaart to have focus)
 - Select Tab By Name
