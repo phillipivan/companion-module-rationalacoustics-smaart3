@@ -14,6 +14,10 @@ class SmaartV3 extends InstanceBase {
 		super(internal)
 		this.reconnecting = null
 		this.closing = false
+		this.moduleStatus = {
+			currentStatus: null,
+			message: '',
+		}
 	}
 
 	/**
@@ -57,12 +61,27 @@ class SmaartV3 extends InstanceBase {
 		queue.clear()
 		this.config = config
 
-		this.updateStatus(InstanceStatus.Connecting)
+		this.checkStatus(InstanceStatus.Connecting)
 
 		this.logout()
 		if (config.host && config.port) {
 			this.login(config.host, config.port, config.password)
 		}
+	}
+
+	/**
+	 * Debouce status updates
+	 * @param {InstanceStatus} status
+	 * @param {string} message
+	 * @access private
+	 * @since 2.1.0
+	 */
+
+	checkStatus(status, message) {
+		if (this.moduleStatus.currentStatus === status && this.moduleStatus.message == message) return
+		this.updateStatus(status, message)
+		this.moduleStatus.currentStatus = status
+		this.moduleStatus.message = message
 	}
 
 	/**
@@ -127,30 +146,30 @@ class SmaartV3 extends InstanceBase {
 
 		// Connect to remote control websocket of Smaart
 		this.socket = new WebSocket('ws://' + host + ':' + parseInt(port) + '/api/v3/')
-		this.updateStatus(InstanceStatus.Connecting)
+		this.checkStatus(InstanceStatus.Connecting)
 		this.socket.addEventListener('open', () => {
-			this.updateStatus(InstanceStatus.Ok)
+			this.checkStatus(InstanceStatus.Ok)
 			this.log('info', `Connected to ws://${host}:${port}/`)
 			this.sendData({
-				//sequenceNumber: 1,
+				sequenceNumber: 1,
 				action: 'get',
 			})
 		})
 
 		this.socket.addEventListener('error', (err) => {
 			this.log('error', JSON.stringify(err))
-			this.updateStatus(InstanceStatus.ConnectionFailure, err.message)
+			this.checkStatus(InstanceStatus.ConnectionFailure, err.message)
 		})
 
 		this.socket.addEventListener('close', (event) => {
-			this.updateStatus(InstanceStatus.ConnectionFailure, 'Disconnected from Smaart')
+			this.checkStatus(InstanceStatus.ConnectionFailure, 'Disconnected from Smaart')
 			this.log('warn', `Socket Closed ${event.code} ${event.reason}`)
 			if (!this.closing) {
 				this.keep_login_retry(RECONNECT_TIMEOUT)
 			}
 		})
 
-		this.socket.addEventListener('message', (message) => {
+		this.socket.addEventListener('message', async (message) => {
 			//this.log('debug', `message recieved: ${JSON.stringify(message)}`)
 			if (message.data !== undefined) {
 				try {
@@ -160,16 +179,16 @@ class SmaartV3 extends InstanceBase {
 						for (const error of errors) {
 							if (jsonMsg.response.error === error.id) {
 								this.log(error.logLevel, error.description)
-								this.updateStatus(error.status, error.statusDescription)
+								this.checkStatus(error.status, error.statusDescription)
 								break
 							}
 						}
 					} else {
-						this.updateStatus(InstanceStatus.Ok)
+						this.checkStatus(InstanceStatus.Ok)
 
 						if (jsonMsg?.sequenceNumber === 1 && jsonMsg?.response?.authenticationRequired) {
 							this.log('info', 'Authenticating')
-							this.sendData({
+							await this.sendData({
 								action: 'set',
 								properties: [
 									{
@@ -180,7 +199,7 @@ class SmaartV3 extends InstanceBase {
 						}
 					}
 				} catch (e) {
-					this.updateStatus(InstanceStatus.UnknownWarning)
+					this.checkStatus(InstanceStatus.UnknownWarning)
 					this.log('warn', `Parsing Error. ${JSON.stringify(e)}`)
 				}
 			}
@@ -232,12 +251,10 @@ class SmaartV3 extends InstanceBase {
 	 * @since 2.1.0
 	 */
 
-	*sequenceNumber() {
-		let sequence = 0
-		while (true) {
-			sequence = sequence < 0xffff ? sequence + 1 : 0
-			yield sequence
-		}
+	sequenceNumber() {
+		if (this.sequence === undefined) this.sequence = 2
+		this.sequence = this.sequence < 0xffff ? this.sequence + 1 : 2
+		return this.sequence
 	}
 
 	/**
@@ -269,7 +286,7 @@ class SmaartV3 extends InstanceBase {
 	async sendData(jsonPayload) {
 		await queue.add(() => {
 			if (this.socket != undefined && this.socket.readyState === WebSocket.OPEN) {
-				jsonPayload.sequenceNumber = this.sequenceNumber().next().value
+				jsonPayload.sequenceNumber = jsonPayload.sequenceNumber ?? this.sequenceNumber()
 				this.socket.send(JSON.stringify(jsonPayload))
 				this.startKeepAlive()
 			} else {
@@ -398,7 +415,7 @@ class SmaartV3 extends InstanceBase {
 	 * @since 2.0.0
 	 */
 
-	/* captureTrace(traceName) {
+	captureTrace(traceName) {
 		const payload = {
 			//sequenceNumber: 42,
 			action: 'capture',
@@ -408,7 +425,7 @@ class SmaartV3 extends InstanceBase {
 		}
 		this.log('debug', `captureTrace: ${JSON.stringify(payload)}`)
 		this.sendData(payload)
-	} */
+	}
 
 	/**
 	 * Sends command to capture current trace
@@ -418,7 +435,7 @@ class SmaartV3 extends InstanceBase {
 	 * @since 2.0.0
 	 */
 
-	/* renameTrace(traceName, tracePath) {
+	renameTrace(traceName, tracePath) {
 		const payload = {
 			//sequenceNumber: 42,
 			action: 'set',
@@ -429,7 +446,7 @@ class SmaartV3 extends InstanceBase {
 		}
 		this.log('debug', `renameTrace: ${JSON.stringify(payload)}`)
 		this.sendData(payload)
-	} */
+	}
 
 	/**
 	 * Sends command to issueCommand handler

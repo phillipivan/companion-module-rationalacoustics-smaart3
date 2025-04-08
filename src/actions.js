@@ -376,7 +376,7 @@ export default async function (self) {
 				self.issueCommand('M')
 			},
 		},
-		/* 		captureTrace: {
+		captureTrace: {
 			name: 'Capture Current Trace',
 			options: [
 				{
@@ -415,6 +415,6 @@ export default async function (self) {
 					await context.parseVariablesInString(action.options.tracePath),
 				)
 			},
-		}, */
+		},
 	})
 }
